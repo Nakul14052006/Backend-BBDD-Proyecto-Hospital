@@ -1,5 +1,6 @@
 package com.Hospital.Hospital;
 
+import com.Hospital.Hospital.Repository.nurse_repo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,9 +16,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/nurse")
 public class NurseController {
-	
-	
-	@GetMapping("/index")
+
+    private final nurse_repo repo;
+
+    public NurseController(nurse_repo repo) {
+        this.repo = repo;
+    }
+
+
+    @GetMapping("/index")
 	public List<Nurse> getAll() {
 	    return getMockNurses();
 	}
@@ -81,4 +88,14 @@ public class NurseController {
    
     // Datos estáticos de prueba (simulando almacenamiento temporal/JSON)
 
+
+    @GetMapping("/search/{username}")
+    public ResponseEntity<Nurse> findByUsername(@PathVariable String username){
+        Nurse nurse = repo.findByUsername(username);
+
+        if(nurse == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(nurse);
+    }
 }
